@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.mvpmatch</groupId>
-	<artifactId>vendingmachine</artifactId>
+	<artifactId>vending-machine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>vendingmachine</name>
+	<name>vending-machine</name>
 	<description>Demo Vending Machine for MVP Match</description>
 	<properties>
 		<java.version>11</java.version>
