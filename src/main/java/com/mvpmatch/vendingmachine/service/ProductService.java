@@ -66,11 +66,32 @@ public class ProductService {
                 user.setDeposit(user.getDeposit() - totalSpent);
                 userRepository.save(user);
 
-                final Map<String, Long> change = new HashMap<>();
-                response.put("change", change);
+                response.put("change", calculateChange(totalSpent));
 
                 return response;
             });
         });
+    }
+
+    private Map<String, Long> calculateChange(final Long total) {
+        final Map<String, Long> change = new HashMap<>();
+        Long spent = total;
+        change.put("100", spent %100);
+        if ((spent %100) > 0)
+            spent -= 100 * (spent %100);
+        change.put("50", spent %50);
+        if ((spent %50) > 0)
+            spent -= 50 * (spent %50);
+        change.put("20", spent %20);
+        if ((spent %20) > 0)
+            spent -= 20 * (spent %20);
+        change.put("10", spent %10);
+        if ((spent %10) > 0)
+            spent -= 10 * (spent %10);
+        change.put("100", spent %100);
+        if ((spent %5) > 0)
+            spent -= 5 * (spent %5);
+
+        return change;
     }
 }
