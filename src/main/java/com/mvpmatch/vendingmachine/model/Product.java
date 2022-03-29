@@ -2,22 +2,20 @@ package com.mvpmatch.vendingmachine.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import lombok.Getter;
+import javax.persistence.Table;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by vedadsurkovic on 3/28/22
  **/
 @RequiredArgsConstructor
-@Entity(name = "Product")
-@Getter
-@Setter
+@Table(name = "Product")
+@Data
 public class Product {
 
     @Id

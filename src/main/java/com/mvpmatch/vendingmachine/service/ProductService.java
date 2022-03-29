@@ -88,9 +88,10 @@ public class ProductService {
         change.put("10", spent %10);
         if ((spent %10) > 0)
             spent -= 10 * (spent %10);
-        change.put("100", spent %100);
+        change.put("5", spent %5);
         if ((spent %5) > 0)
             spent -= 5 * (spent %5);
+        change.put("Total change", spent);
 
         return change;
     }

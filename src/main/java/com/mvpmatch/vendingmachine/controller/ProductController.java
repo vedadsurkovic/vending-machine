@@ -4,6 +4,7 @@ import com.mvpmatch.vendingmachine.model.Product;
 import com.mvpmatch.vendingmachine.service.ProductService;
 import javax.servlet.ServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,7 +21,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> get(final Product product) {
+    @PreAuthorize("hasAuthority('SELLER')")
+    public ResponseEntity<?> create(final Product product) {
         return ResponseEntity.ok(productService.create(product));
     }
 
@@ -35,17 +37,20 @@ public class ProductController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity<?> update(final Product product) {
         return ResponseEntity.ok(productService.update(product));
     }
 
     @DeleteMapping("/{productId}")
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity<?> delete(@PathVariable final Long productId) {
         productService.delete(productId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/buy")
+    @PreAuthorize("hasAuthority('BUYER')")
     public ResponseEntity<?> buy(ServletRequest request) {
         return ResponseEntity.ok(productService.buy(
             Long.valueOf(request.getParameter("userId")),

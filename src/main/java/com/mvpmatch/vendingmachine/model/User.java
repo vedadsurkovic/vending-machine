@@ -1,21 +1,19 @@
 package com.mvpmatch.vendingmachine.model;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.Getter;
+import javax.persistence.Table;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by vedadsurkovic on 3/28/22
  **/
 @RequiredArgsConstructor
-@Entity(name = "User")
-@Getter
-@Setter
+@Table(name = "User")
+@Data
 public class User {
 
     @Id

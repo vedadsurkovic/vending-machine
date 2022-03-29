@@ -4,6 +4,7 @@ import com.mvpmatch.vendingmachine.model.User;
 import com.mvpmatch.vendingmachine.service.UserService;
 import javax.servlet.ServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> get(final User user) {
+    public ResponseEntity<?> create(final User user) {
         return ResponseEntity.ok(userService.create(user));
     }
 
@@ -53,6 +54,7 @@ public class UserController {
     }
 
     @PatchMapping("/deposit")
+    @PreAuthorize("hasAuthority('BUYER')")
     public ResponseEntity<?> deposit(final ServletRequest request) {
         return ResponseEntity.ok(userService.deposit(
             Long.valueOf(request.getParameter("userId")),
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     @PatchMapping("/reset")
+    @PreAuthorize("hasAuthority('BUYER')")
     public ResponseEntity<?> reset(final ServletRequest request) {
         return ResponseEntity.ok(userService.reset(
             Long.valueOf(request.getParameter("userId"))));
