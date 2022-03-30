@@ -28,6 +28,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> create(final User user) {
         return ResponseEntity.ok(userService.create(user));
     }

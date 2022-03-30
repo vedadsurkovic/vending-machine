@@ -1,6 +1,8 @@
 package com.mvpmatch.vendingmachine.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtUtils jwtUtils;
 
-    public SecurityConfig(final UserDetailsService userDetailsService,
+    public SecurityConfig(@Lazy final UserDetailsService userDetailsService,
         final AuthEntryPointJwt unauthorizedHandler, final JwtUtils jwtUtils) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -42,7 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/user/**");
+        web.ignoring()
+            .antMatchers(HttpMethod.POST)
+            .antMatchers("/user/**");
     }
 
     @Override
