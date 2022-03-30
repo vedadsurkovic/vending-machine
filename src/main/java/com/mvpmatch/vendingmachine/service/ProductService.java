@@ -1,7 +1,6 @@
 package com.mvpmatch.vendingmachine.service;
 
-import com.mvpmatch.vendingmachine.model.Product;
-import com.mvpmatch.vendingmachine.model.User;
+import com.mvpmatch.vendingmachine.model.ProductEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.HashMap;
@@ -26,19 +25,19 @@ public class ProductService {
         this.userRepository = userRepository;
     }
 
-    public Product create(final Product product) {
-        return productRepository.save(product);
+    public ProductEntity create(final ProductEntity productEntity) {
+        return productRepository.save(productEntity);
     }
 
-    public Product update(final Product product) {
-        return productRepository.save(product);
+    public ProductEntity update(final ProductEntity productEntity) {
+        return productRepository.save(productEntity);
     }
 
-    public Optional<Product> read(final Long productId) {
+    public Optional<ProductEntity> read(final Long productId) {
         return productRepository.findById(productId);
     }
 
-    public List<Product> readAll() {
+    public List<ProductEntity> readAll() {
         return productRepository.findAll();
     }
 
@@ -53,15 +52,15 @@ public class ProductService {
         return userRepository.findById(userId).map(user -> {
             if (user.getDeposit() < 5)
                 return Optional.empty();
-            return productRepository.findById(productId).map(product -> {
-                if (product.getAmountAvailable() < amount)
+            return productRepository.findById(productId).map(productEntity -> {
+                if (productEntity.getAmountAvailable() < amount)
                     return Optional.empty();
 
-                response.put("product", product.getProductName());
-                product.setAmountAvailable(product.getAmountAvailable() - amount);
-                productRepository.save(product);
+                response.put("product", productEntity.getProductName());
+                productEntity.setAmountAvailable(productEntity.getAmountAvailable() - amount);
+                productRepository.save(productEntity);
 
-                final Long totalSpent = product.getCost() * amount;
+                final Long totalSpent = productEntity.getCost() * amount;
                 response.put("totalSpent", totalSpent);
                 user.setDeposit(user.getDeposit() - totalSpent);
                 userRepository.save(user);

@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.service;
 
-import com.mvpmatch.vendingmachine.model.User;
+import com.mvpmatch.vendingmachine.model.UserEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.List;
@@ -23,19 +23,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User create(final User user) {
-        return userRepository.save(user);
+    public UserEntity create(final UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
-    public User update(final User user) {
-        return userRepository.save(user);
+    public UserEntity update(final UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 
-    public Optional<User> read(final Long userId) {
+    public Optional<UserEntity> read(final Long userId) {
         return userRepository.findById(userId);
     }
 
-    public List<User> readAll() {
+    public List<UserEntity> readAll() {
         return userRepository.findAll();
     }
 
@@ -44,7 +44,7 @@ public class UserService {
             .ifPresent(userRepository::delete);
     }
 
-    public Optional<User> deposit(final Long userId, final Long deposit) {
+    public Optional<UserEntity> deposit(final Long userId, final Long deposit) {
         if ((deposit % 5) != 0)
             return Optional.empty();
 
@@ -55,7 +55,7 @@ public class UserService {
             });
     }
 
-    public Optional<User> reset(final Long userId) {
+    public Optional<UserEntity> reset(final Long userId) {
         return userRepository.findById(userId).flatMap(
             user -> {
                 user.setDeposit(0L);

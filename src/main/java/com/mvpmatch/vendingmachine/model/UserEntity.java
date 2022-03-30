@@ -1,12 +1,10 @@
 package com.mvpmatch.vendingmachine.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -16,21 +14,20 @@ import lombok.RequiredArgsConstructor;
  **/
 @RequiredArgsConstructor
 @Entity
-@Table(name = "Product")
+@Table(name = "User")
 @Data
-public class Product {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    private String productName;
+    private String username;
 
-    private Integer amountAvailable;
+    private String password;
 
-    private Long cost;
+    private Long deposit;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private User seller;
+    private Role role;
 }

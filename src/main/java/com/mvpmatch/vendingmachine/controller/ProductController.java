@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.controller;
 
-import com.mvpmatch.vendingmachine.model.Product;
+import com.mvpmatch.vendingmachine.model.ProductEntity;
 import com.mvpmatch.vendingmachine.service.ProductService;
 import javax.servlet.ServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<?> create(final Product product) {
-        return ResponseEntity.ok(productService.create(product));
+    public ResponseEntity<?> create(final ProductEntity productEntity) {
+        return ResponseEntity.ok(productService.create(productEntity));
     }
 
     @GetMapping("/{productId}")
@@ -38,8 +38,8 @@ public class ProductController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<?> update(final Product product) {
-        return ResponseEntity.ok(productService.update(product));
+    public ResponseEntity<?> update(final ProductEntity productEntity) {
+        return ResponseEntity.ok(productService.update(productEntity));
     }
 
     @DeleteMapping("/{productId}")

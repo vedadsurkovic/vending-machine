@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.controller;
 
-import com.mvpmatch.vendingmachine.model.User;
+import com.mvpmatch.vendingmachine.model.UserEntity;
 import com.mvpmatch.vendingmachine.service.UserService;
 import javax.servlet.ServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +29,8 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> create(final User user) {
-        return ResponseEntity.ok(userService.create(user));
+    public ResponseEntity<?> create(final UserEntity userEntity) {
+        return ResponseEntity.ok(userService.create(userEntity));
     }
 
     @GetMapping("/{userId}")
@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(final User user) {
-        return ResponseEntity.ok(userService.update(user));
+    public ResponseEntity<?> update(final UserEntity userEntity) {
+        return ResponseEntity.ok(userService.update(userEntity));
     }
 
     @DeleteMapping("/{userId}")
