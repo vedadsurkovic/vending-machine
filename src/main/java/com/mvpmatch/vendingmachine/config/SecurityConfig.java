@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and()
-            .authorizeRequests().antMatchers("/auth/**").permitAll().and()
+            .authorizeRequests().antMatchers("/login/**").permitAll().and()
             .authorizeRequests().antMatchers(HttpMethod.POST, "/user/**").permitAll().and()
             .authorizeRequests().antMatchers(HttpMethod.GET, "/product/**").permitAll()
             .anyRequest().authenticated();

@@ -1,11 +1,8 @@
 package com.mvpmatch.vendingmachine.config.model;
 
 import com.mvpmatch.vendingmachine.entity.UserEntity;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -36,12 +33,6 @@ public class MyUserPrincipal extends User {
     @Override
     public String getPassword() {
         return userEntity.getPassword();
-    }
-
-    @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(
-            userEntity.getRole().toString()));
     }
 
     public UserEntity getUser() {

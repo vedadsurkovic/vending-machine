@@ -46,12 +46,13 @@ public class ProductService {
             .ifPresent(productRepository::delete);
     }
 
-    public Optional<?> buy(final Long userId, final Long productId, final Integer amount) {
+    public Object buy(final Long userId, final Long productId, final Integer amount) {
         final Map<String, Object> response = new HashMap<>();
 
-        return userRepository.findById(userId).map(user -> {
+        return userRepository.findById(userId).flatMap(user -> {
             if (user.getDeposit() < 5)
                 return Optional.empty();
+
             return productRepository.findById(productId).map(productEntity -> {
                 if (productEntity.getAmountAvailable() < amount)
                     return Optional.empty();
@@ -72,7 +73,7 @@ public class ProductService {
 
                 return response;
             });
-        });
+        }).orElse(response);
     }
 
     private Map<String, Long> calculateChange(final Long total) {

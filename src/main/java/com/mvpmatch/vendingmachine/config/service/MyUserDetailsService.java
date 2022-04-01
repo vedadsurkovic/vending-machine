@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.config.service;
 
-import com.mvpmatch.vendingmachine.config.model.MyUserPrincipal;
+import com.mvpmatch.vendingmachine.config.model.*;
 import com.mvpmatch.vendingmachine.entity.UserEntity;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

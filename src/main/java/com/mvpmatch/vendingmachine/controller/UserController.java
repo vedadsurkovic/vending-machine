@@ -1,10 +1,14 @@
 package com.mvpmatch.vendingmachine.controller;
 
+import com.mvpmatch.vendingmachine.config.model.MyUserPrincipal;
+import com.mvpmatch.vendingmachine.entity.Role;
 import com.mvpmatch.vendingmachine.entity.UserEntity;
 import com.mvpmatch.vendingmachine.service.UserService;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.mvpmatch.vendingmachine.util.Util.checkIfRoleIsValid;
 
 /**
  * Created by vedadsurkovic on 3/28/22
@@ -57,16 +63,26 @@ public class UserController {
     }
 
     @PatchMapping("/deposit")
-    @PreAuthorize("hasAuthority('BUYER')")
     public ResponseEntity<?> deposit(@RequestBody final Map<String, String> request) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
+
+        if (checkIfRoleIsValid(myUserPrincipal, Role.BUYER))
+            return ResponseEntity.badRequest().body("Only user with role BUYER can access this endpoint");
+
         return ResponseEntity.ok(userService.deposit(
-            Long.valueOf(request.get("userId")),
+            myUserPrincipal.getUser().getId(),
             Long.valueOf(request.get("deposit"))));
     }
 
     @PatchMapping("/reset")
-    @PreAuthorize("hasAuthority('BUYER')")
     public ResponseEntity<?> reset(@RequestBody final Map<String, String> request) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
+
+        if (checkIfRoleIsValid(myUserPrincipal, Role.BUYER))
+            return ResponseEntity.badRequest().body("Only user with role BUYER can access this endpoint");
+
         return ResponseEntity.ok(userService.reset(
             Long.valueOf(request.get("userId"))));
     }

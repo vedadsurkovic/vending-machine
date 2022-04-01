@@ -1,7 +1,7 @@
 package com.mvpmatch.vendingmachine.controller;
 
 import com.mvpmatch.vendingmachine.config.JwtUtils;
-import com.mvpmatch.vendingmachine.config.model.MyUserPrincipal;
+import com.mvpmatch.vendingmachine.config.model.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
