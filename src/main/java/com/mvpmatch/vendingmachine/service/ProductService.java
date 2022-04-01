@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.service;
 
-import com.mvpmatch.vendingmachine.model.ProductEntity;
+import com.mvpmatch.vendingmachine.entity.ProductEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.HashMap;
@@ -61,6 +61,9 @@ public class ProductService {
                 productRepository.save(productEntity);
 
                 final Long totalSpent = productEntity.getCost() * amount;
+                if (totalSpent > user.getDeposit())
+                    return Optional.empty();
+
                 response.put("totalSpent", totalSpent);
                 user.setDeposit(user.getDeposit() - totalSpent);
                 userRepository.save(user);

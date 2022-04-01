@@ -1,10 +1,11 @@
 package com.mvpmatch.vendingmachine.service;
 
-import com.mvpmatch.vendingmachine.model.UserEntity;
+import com.mvpmatch.vendingmachine.entity.UserEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,17 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
-    public UserService(final ProductRepository productRepository,
+    public UserService(final PasswordEncoder encoder,
         final UserRepository userRepository) {
 
-        this.productRepository = productRepository;
+        this.encoder = encoder;
         this.userRepository = userRepository;
     }
 
     public UserEntity create(final UserEntity userEntity) {
+
+        userEntity.setPassword(encoder.encode(userEntity.getPassword()));
         return userRepository.save(userEntity);
     }
 
@@ -50,7 +53,8 @@ public class UserService {
 
         return userRepository.findById(userId).flatMap(
             user -> {
-                user.setDeposit(deposit);
+                final Long newDeposit = user.getDeposit() + deposit;
+                user.setDeposit(newDeposit);
                 return Optional.of(userRepository.save(user));
             });
     }

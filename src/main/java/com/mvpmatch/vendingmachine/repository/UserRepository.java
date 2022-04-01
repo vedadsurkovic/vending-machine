@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.repository;
 
-import com.mvpmatch.vendingmachine.model.UserEntity;
+import com.mvpmatch.vendingmachine.entity.UserEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

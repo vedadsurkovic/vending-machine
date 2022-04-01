@@ -1,9 +1,9 @@
 package com.mvpmatch.vendingmachine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mvpmatch.vendingmachine.model.ProductEntity;
-import com.mvpmatch.vendingmachine.model.Role;
-import com.mvpmatch.vendingmachine.model.UserEntity;
+import com.mvpmatch.vendingmachine.entity.ProductEntity;
+import com.mvpmatch.vendingmachine.entity.Role;
+import com.mvpmatch.vendingmachine.entity.UserEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.UUID;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -38,7 +37,6 @@ class VendingMachineApplicationTest {
 
 	@Test
 	void testDeposit() {
-
 	}
 
 	@Test

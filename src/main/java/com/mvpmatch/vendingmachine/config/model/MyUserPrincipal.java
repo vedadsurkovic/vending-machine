@@ -1,6 +1,6 @@
 package com.mvpmatch.vendingmachine.config.model;
 
-import com.mvpmatch.vendingmachine.model.UserEntity;
+import com.mvpmatch.vendingmachine.entity.UserEntity;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +18,7 @@ public class MyUserPrincipal extends User {
 
     private final UserEntity userEntity;
 
-    public MyUserPrincipal(UserEntity userEntity) {
+    public MyUserPrincipal(final UserEntity userEntity) {
         super(userEntity.getUsername(),
             userEntity.getPassword(),
             Stream.of(new SimpleGrantedAuthority(

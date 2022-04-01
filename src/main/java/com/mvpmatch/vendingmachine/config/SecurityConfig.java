@@ -4,10 +4,10 @@ import com.mvpmatch.vendingmachine.config.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
@@ -37,16 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+    protected void configure(final AuthenticationManagerBuilder authenticationManager) throws Exception {
+        authenticationManager.userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder());
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-            .antMatchers(HttpMethod.POST)
-            .antMatchers("/user/**");
     }
 
     @Override
@@ -54,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and()
-            .authorizeRequests().antMatchers("/**").permitAll()
+            .authorizeRequests().antMatchers("/auth/**").permitAll().and()
+            .authorizeRequests().antMatchers(HttpMethod.POST, "/user/**").permitAll().and()
+            .authorizeRequests().antMatchers(HttpMethod.GET, "/product/**").permitAll()
             .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
@@ -72,5 +67,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults("");
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 }

@@ -1,8 +1,8 @@
 package com.mvpmatch.vendingmachine.controller;
 
-import com.mvpmatch.vendingmachine.model.ProductEntity;
+import com.mvpmatch.vendingmachine.entity.ProductEntity;
 import com.mvpmatch.vendingmachine.service.ProductService;
-import javax.servlet.ServletRequest;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<?> create(final ProductEntity productEntity) {
+    public ResponseEntity<?> create(@RequestBody final ProductEntity productEntity) {
         return ResponseEntity.ok(productService.create(productEntity));
     }
 
@@ -38,7 +38,7 @@ public class ProductController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<?> update(final ProductEntity productEntity) {
+    public ResponseEntity<?> update(@RequestBody final ProductEntity productEntity) {
         return ResponseEntity.ok(productService.update(productEntity));
     }
 
@@ -51,10 +51,10 @@ public class ProductController {
 
     @PatchMapping("/buy")
     @PreAuthorize("hasAuthority('BUYER')")
-    public ResponseEntity<?> buy(ServletRequest request) {
+    public ResponseEntity<?> buy(@RequestBody final Map<String, String> request) {
         return ResponseEntity.ok(productService.buy(
-            Long.valueOf(request.getParameter("userId")),
-            Long.valueOf(request.getParameter("productId")),
-            Integer.valueOf(request.getParameter("amount"))));
+            Long.valueOf(request.get("userId")),
+            Long.valueOf(request.get("productId")),
+            Integer.valueOf(request.get("amount"))));
     }
 }
