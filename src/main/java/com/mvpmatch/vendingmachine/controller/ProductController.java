@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.mvpmatch.vendingmachine.util.Util.checkIfRoleIsValid;
+import static com.mvpmatch.vendingmachine.util.Util.checkIfRoleIsInvalid;
 
 /**
  * Created by vedadsurkovic on 3/28/22
@@ -32,10 +32,10 @@ public class ProductController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.SELLER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.SELLER))
             return ResponseEntity.badRequest().body("Only user with role SELLER can access this endpoint");
 
-        return ResponseEntity.ok(productService.create(productEntity));
+        return ResponseEntity.ok(productService.create(productEntity, myUserPrincipal.getUser()));
     }
 
     @GetMapping("/{productId}")
@@ -53,7 +53,7 @@ public class ProductController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.SELLER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.SELLER))
             return ResponseEntity.badRequest().body("Only user with role SELLER can access this endpoint");
 
         return ResponseEntity.ok(productService.update(productEntity));
@@ -64,7 +64,7 @@ public class ProductController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.SELLER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.SELLER))
             return ResponseEntity.badRequest().body("Only user with role SELLER can access this endpoint");
 
         productService.delete(productId);
@@ -76,12 +76,12 @@ public class ProductController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.BUYER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.BUYER))
             return ResponseEntity.badRequest().body("Only user with role BUYER can access this endpoint");
 
-        return ResponseEntity.ok(productService.buy(
+        return productService.buy(
             myUserPrincipal.getUser().getId(),
             Long.valueOf(request.get("productId")),
-            Integer.valueOf(request.get("amount"))));
+            Integer.valueOf(request.get("amount")));
     }
 }

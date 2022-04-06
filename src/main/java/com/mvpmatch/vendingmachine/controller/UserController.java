@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.mvpmatch.vendingmachine.util.Util.checkIfRoleIsValid;
+import static com.mvpmatch.vendingmachine.util.Util.checkIfRoleIsInvalid;
 
 /**
  * Created by vedadsurkovic on 3/28/22
@@ -67,12 +67,12 @@ public class UserController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.BUYER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.BUYER))
             return ResponseEntity.badRequest().body("Only user with role BUYER can access this endpoint");
 
-        return ResponseEntity.ok(userService.deposit(
+        return userService.deposit(
             myUserPrincipal.getUser().getId(),
-            Long.valueOf(request.get("deposit"))));
+            Long.valueOf(request.get("deposit")));
     }
 
     @PatchMapping("/reset")
@@ -80,7 +80,7 @@ public class UserController {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final MyUserPrincipal myUserPrincipal = (MyUserPrincipal) auth.getPrincipal();
 
-        if (checkIfRoleIsValid(myUserPrincipal, Role.BUYER))
+        if (checkIfRoleIsInvalid(myUserPrincipal, Role.BUYER))
             return ResponseEntity.badRequest().body("Only user with role BUYER can access this endpoint");
 
         return ResponseEntity.ok(userService.reset(

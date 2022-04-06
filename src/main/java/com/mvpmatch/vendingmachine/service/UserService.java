@@ -1,10 +1,10 @@
 package com.mvpmatch.vendingmachine.service;
 
 import com.mvpmatch.vendingmachine.entity.UserEntity;
-import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,16 +47,18 @@ public class UserService {
             .ifPresent(userRepository::delete);
     }
 
-    public Optional<UserEntity> deposit(final Long userId, final Long deposit) {
+    public ResponseEntity<?> deposit(final Long userId, final Long deposit) {
         if ((deposit % 5) != 0)
-            return Optional.empty();
+            return ResponseEntity.badRequest().body("Deposit is not one of the available 5, 10, 20, 50, 100.");
 
-        return userRepository.findById(userId).flatMap(
-            user -> {
-                final Long newDeposit = user.getDeposit() + deposit;
-                user.setDeposit(newDeposit);
-                return Optional.of(userRepository.save(user));
-            });
+        final UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null)
+            return ResponseEntity.badRequest().body("User does not exist");
+
+        final Long newDeposit = user.getDeposit() + deposit;
+        user.setDeposit(newDeposit);
+
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     public Optional<UserEntity> reset(final Long userId) {

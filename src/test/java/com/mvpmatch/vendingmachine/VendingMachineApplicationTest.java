@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
@@ -62,7 +64,7 @@ class VendingMachineApplicationTest {
 
 		testUser.setDeposit(50L);
 		when(userService.deposit(testUser.getId(), 50L))
-			.thenReturn(Optional.of(testUser));
+			.thenReturn(new ResponseEntity(testUser, HttpStatus.OK));
 
 		mvc.perform(patch("/user/deposit")
 				.header("Authorization", AUTHORIZATION)
@@ -87,7 +89,7 @@ class VendingMachineApplicationTest {
 		response.put("totalSpent", productEntity.getCost() * 2);
 		response.put("change", 40L);
 		when(productService.buy(testUser.getId(), 1L, 2))
-			.thenReturn(response);
+			.thenReturn(new ResponseEntity(response, HttpStatus.OK));
 
 		mvc.perform(patch("/product/buy")
 				.header("Authorization", AUTHORIZATION)

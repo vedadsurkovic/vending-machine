@@ -1,13 +1,16 @@
 package com.mvpmatch.vendingmachine.service;
 
 import com.mvpmatch.vendingmachine.entity.ProductEntity;
+import com.mvpmatch.vendingmachine.entity.UserEntity;
 import com.mvpmatch.vendingmachine.repository.ProductRepository;
 import com.mvpmatch.vendingmachine.repository.UserRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by vedadsurkovic on 3/28/22
@@ -25,7 +28,8 @@ public class ProductService {
         this.userRepository = userRepository;
     }
 
-    public ProductEntity create(final ProductEntity productEntity) {
+    public ProductEntity create(final ProductEntity productEntity, final UserEntity user) {
+        productEntity.setSeller(user);
         return productRepository.save(productEntity);
     }
 
@@ -46,55 +50,70 @@ public class ProductService {
             .ifPresent(productRepository::delete);
     }
 
-    public Object buy(final Long userId, final Long productId, final Integer amount) {
+    @Transactional
+    public ResponseEntity<?> buy(final Long userId, final Long productId, final Integer amount) {
         final Map<String, Object> response = new HashMap<>();
 
-        return userRepository.findById(userId).flatMap(user -> {
-            if (user.getDeposit() < 5)
-                return Optional.empty();
+        final UserEntity user = userRepository.findById(userId).orElse(null);
 
-            return productRepository.findById(productId).map(productEntity -> {
-                if (productEntity.getAmountAvailable() < amount)
-                    return Optional.empty();
+        if (user == null)
+            return ResponseEntity.badRequest().body("User does not exist");
+        if (user.getDeposit() < 5)
+            return ResponseEntity.badRequest().body("Deposit is not the power of 5.");
 
-                response.put("product", productEntity.getProductName());
-                productEntity.setAmountAvailable(productEntity.getAmountAvailable() - amount);
-                productRepository.save(productEntity);
+        final ProductEntity product = productRepository.findById(productId).orElse(null);
+        if (product == null)
+            return ResponseEntity.badRequest().body("Product does not exist");
+        if (product.getAmountAvailable() < amount)
+            return ResponseEntity.badRequest().body("There is not enough product on stock.");
 
-                final Long totalSpent = productEntity.getCost() * amount;
-                if (totalSpent > user.getDeposit())
-                    return Optional.empty();
+        final Long totalSpent = product.getCost() * amount;
+        if (totalSpent > user.getDeposit())
+            return ResponseEntity.badRequest().body("User does not have enough deposit");
 
-                response.put("totalSpent", totalSpent);
-                user.setDeposit(user.getDeposit() - totalSpent);
-                userRepository.save(user);
+        response.put("product", product.getProductName());
+        response.put("totalSpent", totalSpent);
 
-                response.put("change", calculateChange(totalSpent));
+        product.setAmountAvailable(product.getAmountAvailable() - amount);
+        productRepository.save(product);
 
-                return response;
-            });
-        }).orElse(response);
+        final Long newDeposit = user.getDeposit() - totalSpent;
+        user.setDeposit(newDeposit);
+        userRepository.save(user);
+
+        response.put("change", calculateChange(newDeposit));
+        return ResponseEntity.ok(response);
     }
 
-    private Map<String, Long> calculateChange(final Long total) {
+    private Map<String, Long> calculateChange(final Long deposit) {
         final Map<String, Long> change = new HashMap<>();
-        Long spent = total;
-        change.put("100", spent %100);
-        if ((spent %100) > 0)
-            spent -= 100 * (spent %100);
-        change.put("50", spent %50);
-        if ((spent %50) > 0)
-            spent -= 50 * (spent %50);
-        change.put("20", spent %20);
-        if ((spent %20) > 0)
-            spent -= 20 * (spent %20);
-        change.put("10", spent %10);
-        if ((spent %10) > 0)
-            spent -= 10 * (spent %10);
-        change.put("5", spent %5);
-        if ((spent %5) > 0)
-            spent -= 5 * (spent %5);
-        change.put("Total change", spent);
+
+        long coinNumber;
+        Long newDeposit = deposit;
+        if (newDeposit >= 100) {
+            coinNumber = newDeposit/100;
+            change.put("100", coinNumber);
+            newDeposit -= 100*coinNumber;
+        }
+        if (newDeposit >= 50) {
+            coinNumber = newDeposit/50;
+            change.put("50", coinNumber);
+            newDeposit -= 50*coinNumber;
+        }
+        if (newDeposit >= 20) {
+            coinNumber = newDeposit/20;
+            change.put("20", coinNumber);
+            newDeposit -= 20*coinNumber;
+        }
+        if (newDeposit >= 10) {
+            coinNumber = newDeposit/10;
+            change.put("10", coinNumber);
+            newDeposit -= 10*coinNumber;
+        }
+        if (newDeposit >= 5) {
+            coinNumber = newDeposit/5;
+            change.put("5", coinNumber);
+        }
 
         return change;
     }

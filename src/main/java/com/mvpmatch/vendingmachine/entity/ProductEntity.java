@@ -31,6 +31,6 @@ public class ProductEntity {
 
     private Long cost;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     private UserEntity seller;
 }

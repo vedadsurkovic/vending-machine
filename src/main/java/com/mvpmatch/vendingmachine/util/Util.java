@@ -10,7 +10,7 @@ public final class Util {
 
     private Util() {}
 
-    public static boolean checkIfRoleIsValid(final MyUserPrincipal myUserPrincipal, final Role role) {
+    public static boolean checkIfRoleIsInvalid(final MyUserPrincipal myUserPrincipal, final Role role) {
         return (myUserPrincipal.getUser() != null) &&
             (myUserPrincipal.getUser().getRole() != role);
     }
